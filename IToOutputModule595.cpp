@@ -29,14 +29,14 @@ IToOutputModule595::IToOutputModule595(uint8_t moduleQty, uint8_t pinData, uint8
 	_pinClock = pinClock;
 	pinMode(_pinData, OUTPUT);
 	pinMode(_pinClock, OUTPUT);
+	// If _moduleQty is 255, the 1 port mode (without clock pin) would be used
+	_moduleQty = moduleQty;
 	if(_pinClock == 255) {
 		digitalWrite(_pinData, HIGH);
 	} else {
 		digitalWrite(_pinData, LOW);
 		digitalWrite(_pinClock, LOW);
 	}
-	// Caso o _moduleQty for 255, sera ativado o modo sem pino de clock
-	_moduleQty = moduleQty;
 #ifdef ITOOUTPUTMODULE595_DEBUG
 	Serial.print("Constructor Data:");
 	Serial.print(_pinData);
@@ -104,13 +104,13 @@ void IToOutputModule595::PrivateSend(void){
 			mask = 0x80; // set first bit 1000 0000
 			for (uint8_t bit = 0; bit < 8; ++bit) { // for each bit of the module
 				if(_data[_moduleQty - module - 1] & mask) {
-					digitalWrite(_pinData, LOW);
+					digitalWrite(_pinData, LOW); // time in LOW is not enough to discharge capacitor
 					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITON);
 				} else {
-					digitalWrite(_pinData, LOW);
+					digitalWrite(_pinData, LOW); // time in LOW discharge the capacitor
 					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITOFF);
 				}
-				digitalWrite(_pinData, HIGH);
+				digitalWrite(_pinData, HIGH); // read the data according level of the capacitor
 				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT);
 
 				if((bit == 7) && (module == (_moduleQty - 1))) delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to allow latch

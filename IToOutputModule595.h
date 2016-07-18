@@ -57,26 +57,26 @@ class IToOutputModule595 {
 	virtual uint8_t ResetAll(void);
 
 #ifndef ITOOUTPUTMODULE595_REDUCEDFUNCS
-	// Retorna o estado de todos os pins dos modulos
+	// Returns the status of all ports of the modules
 	virtual uint8_t GetModules(char* hexaValues);
 
-	// Altera todos os pins dos modulos de acordo com hexaValues
+	// Set all ports of the mudules according hexaValues provided
 	virtual uint8_t SetModules(char* hexaValues);
 #endif
 
-	// Retorna a quantidade de modulos
+	// Returns the number of modules
 	virtual uint8_t NumModules();
 
-	// Altera todos os pins de um modulo [0-255]
+	// Returns the status of all ports of the module [0-255]
 	virtual uint8_t GetModule(uint8_t module = 0);
 
-	// Altera todos os pins de um modulo [0-255]
+	// Set all ports of the module [0-255]
 	virtual uint8_t SetModule(uint8_t value, uint8_t module = 0);
 
-	// Retorna o estado do pin, LOW, HIGH or UNDEF
+	// Returns the status of the port, LOW, HIGH or UNDEF, module = 0 if not provided and calculated if pin > 7
 	virtual uint8_t GetOutput(uint8_t pin, uint8_t module = 0);
 
-	// Set output pin, module = 0 if not provided and calculated if pin > 7
+	// Set status of the port, module = 0 if not provided and calculated if pin > 7
 	virtual uint8_t SetOutput(uint8_t pin, uint8_t state, uint8_t module = 0);
 
 	// virtual Info(HardwareSerial *stream, byte format = HEX);
