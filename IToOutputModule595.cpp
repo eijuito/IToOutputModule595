@@ -29,8 +29,12 @@ IToOutputModule595::IToOutputModule595(uint8_t moduleQty, uint8_t pinData, uint8
 	_pinClock = pinClock;
 	pinMode(_pinData, OUTPUT);
 	pinMode(_pinClock, OUTPUT);
-	digitalWrite(_pinData, LOW);
-	digitalWrite(_pinClock, LOW);
+	if(_pinClock == 255) {
+		digitalWrite(_pinData, HIGH);
+	} else {
+		digitalWrite(_pinData, LOW);
+		digitalWrite(_pinClock, LOW);
+	}
 	// Caso o _moduleQty for 255, sera ativado o modo sem pino de clock
 	_moduleQty = moduleQty;
 #ifdef ITOOUTPUTMODULE595_DEBUG
@@ -94,24 +98,48 @@ const char* IToOutputModule595::Version() {
 // Send the data
 void IToOutputModule595::PrivateSend(void){
 	byte mask;
-	for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
+	if(_pinClock == 255) { // If is working without pinClock
+		for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
 
-		mask = 0x80; // set first bit 1000 0000
-		for (uint8_t bit = 0; bit < 8; ++bit) { // for each bit of the module
-			if(_data[_moduleQty - module - 1] & mask) digitalWrite(_pinData, HIGH); // set Data pin
-			else digitalWrite(_pinData, LOW);
+			mask = 0x80; // set first bit 1000 0000
+			for (uint8_t bit = 0; bit < 8; ++bit) { // for each bit of the module
+				if(_data[_moduleQty - module - 1] & mask) {
+					digitalWrite(_pinData, LOW);
+					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITON);
+				} else {
+					digitalWrite(_pinData, LOW);
+					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITOFF);
+				}
+				digitalWrite(_pinData, HIGH);
+				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT);
 
-			delayMicroseconds(ITOOUTPUTMODULE595_DELAY_DATA); // delay between Data and Clock signals
+				if((bit == 7) && (module == (_moduleQty - 1))) delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to allow latch
+				else delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT); // delay small to just shift
 
-			digitalWrite(_pinClock, HIGH); // set Clock pin rising edge
-			if((bit == 7) && (module == (_moduleQty - 1))) delayMicroseconds(ITOOUTPUTMODULE595_DELAY_LATCH); // delay big to allow latch
-			else delayMicroseconds(ITOOUTPUTMODULE595_DELAY_CLOCK_HIGH); // delay small to just shift
-			digitalWrite(_pinClock, LOW);
+				mask >>= 1; // update mask for next bit
+			} // end for each bit of the module
 
-			delayMicroseconds(ITOOUTPUTMODULE595_DELAY_CLOCK_LOW); // it is acceptable to have 5µs delay after the last bit has been sent
-			mask >>= 1; // update mask for next bit
-		} // end for each bit of the module
+		}  // end for each module
+	} else { // If is working without pinClock
+		for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
 
-	}  // end for each module
-	digitalWrite(_pinData, LOW); // reset to maintain LOW level when not in use
+			mask = 0x80; // set first bit 1000 0000
+			for (uint8_t bit = 0; bit < 8; ++bit) { // for each bit of the module
+				if(_data[_moduleQty - module - 1] & mask) digitalWrite(_pinData, HIGH); // set Data pin
+				else digitalWrite(_pinData, LOW);
+
+				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_DATA); // delay between Data and Clock signals
+
+				digitalWrite(_pinClock, HIGH); // set Clock pin rising edge
+				if((bit == 7) && (module == (_moduleQty - 1))) delayMicroseconds(ITOOUTPUTMODULE595_DELAY_LATCH); // delay big to allow latch
+				else delayMicroseconds(ITOOUTPUTMODULE595_DELAY_CLOCK_HIGH); // delay small to just shift
+				digitalWrite(_pinClock, LOW);
+
+				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_CLOCK_LOW); // it is acceptable to have 5µs delay after the last bit has been sent
+				mask >>= 1; // update mask for next bit
+			} // end for each bit of the module
+
+		}  // end for each module
+		digitalWrite(_pinData, LOW); // reset to maintain LOW level when not in use
+	}
 }

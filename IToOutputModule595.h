@@ -37,6 +37,10 @@
 #define ITOOUTPUTMODULE595_DELAY_CLOCK_HIGH     5 // [µs]
 #define ITOOUTPUTMODULE595_DELAY_CLOCK_LOW     20 // [µs]
 #define ITOOUTPUTMODULE595_DELAY_LATCH       1100 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_BITON      25 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_BITOFF    120 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_SHIFT      50 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_LATCH   70000 // [µs]
 #define UNDEF  0x2
 
 #define ITOOUTPUTMODULE595_VERSION "IToOutputModule595 v0.1.2"
@@ -47,7 +51,7 @@ static const char _hexachars[] = "0123456789ABCDEFabcdef";
 class IToOutputModule595 {
 	public:
 	// Construtor
-	IToOutputModule595(uint8_t pinData, uint8_t pinClock, uint8_t moduleQty = 255);
+	IToOutputModule595(uint8_t moduleQty, uint8_t pinData, uint8_t pinClock = 255);
 
 	// Clean all pins of all modules
 	virtual uint8_t ResetAll(void);
