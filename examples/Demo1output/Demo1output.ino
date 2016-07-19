@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include "IToOutputModule595.h"
 
-const uint8_t output_modules_max = 2; // 2 bytes = 4 digitos hexa no outputs
-IToOutputModule595 outs(output_modules_max, 2); // (quantidade de módulos, pino de data)
+const uint8_t qtd_modules = 2; // 2 modules or 2 74HC595
+IToOutputModule595 outs(qtd_modules, 2); // (quantidade de módulos, pino de data)
 
 void setup() {
   Serial.begin(9600);
