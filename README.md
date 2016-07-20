@@ -5,6 +5,37 @@ This library allows Arduino work with modules based on 74HC595 to extend outputs
 For more information about this library please visit us at
 [Project itooutputmodule74595 @ labirito.com](http://www.labirito.com/projetos/itooutputmodule74595 "Labirito projects")
 
+## How use this library?
+
+''' c++
+#include "IToOutputModule595.h"
+
+IToOutputModule595 outs(output_modules_max, 2, 3);
+
+setup() {
+  outs.ResetAll(); // desliga todas as saidas
+}
+
+loop() {
+  for(int i = 0; i < 8; ++i) { // liga todos os leds sequencialmente
+    outs.SetOutput(i, HIGH);
+    delay(100);
+  }
+  for(int i = 0; i < 8; ++i) { // desliga todos os leds sequencialmente
+    outs.SetOutput(i, LOW);
+    delay(100);
+  }
+  for(int i = 0; i < 8; ++i) { // 1 led acesso passeia pra direita
+    outs.SetModule(1 << i);
+    delay(100);
+  }
+  for(int i = 0; i < 8; ++i) { // 1 led acesso passeia pra esquerda
+    outs.SetModule(1 << (7 - i));
+    delay(100);
+  }
+}
+'''
+
 ## Circuit
 
 The circuit below implements the 2 ports output expansion.
