@@ -3,7 +3,7 @@
 This library allows Arduino work with modules based on 74HC595 to extend outputs.
 
 For more information about this library please visit us at
-[Project itooutputmodule74595 @ labirito.com](http://www.labirito.com/projetos/itooutputmodule74595 "Labirito projects")
+[Project ITo Output Module 74HC595 @ labirito.com](http://www.labirito.com/projetos/itooutputmodule74595 "Labirito projects")
 
 ## How use this library?
 
