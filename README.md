@@ -1,4 +1,4 @@
-# ITo Output Module 74HC595 =
+# ITo Output Module 74HC595
 
 This library allows Arduino work with modules based on 74HC595 to extend outputs.
 
