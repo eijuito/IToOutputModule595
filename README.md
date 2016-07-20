@@ -7,7 +7,7 @@ For more information about this library please visit us at
 
 ## How use this library?
 
-''' c++
+```cpp
 #include "IToOutputModule595.h"
 
 IToOutputModule595 outs(output_modules_max, 2, 3);
@@ -34,7 +34,7 @@ loop() {
     delay(100);
   }
 }
-'''
+```
 
 ## Circuit
 
