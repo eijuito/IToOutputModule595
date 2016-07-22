@@ -102,7 +102,7 @@ void IToOutputModule595::PrivateSend(void){
 		for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
 
 			mask = 0x80; // set first bit 1000 0000
-			for (uint8_t bit = 0; bit < 8; ++bit) { // for each bit of the module
+			for (int bit = 0; bit < 8; ++bit) { // for each bit of the module
 				if(_data[_moduleQty - module - 1] & mask) {
 					digitalWrite(_pinData, LOW); // time in LOW is not enough to discharge capacitor
 					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITON);
@@ -113,7 +113,8 @@ void IToOutputModule595::PrivateSend(void){
 				digitalWrite(_pinData, HIGH); // read the data according level of the capacitor
 				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT);
 
-				if((bit == 7) && (module == (_moduleQty - 1))) delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to allow latch
+				if((bit > 6) && (module == (_moduleQty - 1)))
+					delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to allow latch
 				else delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT); // delay small to just shift
 
 				mask >>= 1; // update mask for next bit
