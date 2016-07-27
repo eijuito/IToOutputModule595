@@ -1,24 +1,29 @@
 /*
    Nome do Aquivo:   IToOutputModule595-YYYYMMDDa.h
    Descrição:        Library to expand output ports using 74HC595
-   Versao do Aquivo: 20160602
+   Data criada:      2016-06-23
+   Versao do Aquivo: 2016-07-23
    Dependências:     N/A
+   Escrito por:      Celso Eiju Ito - eijuito@gmail.com
+
    MCU:              ATMEGA 328P 16 MHz
    Board:            Arduino Uno/Mega/Mini
    Compilador        N/A
    IDE:              Eclipse Mars CDT 8.8.1 com plugin Arduino C++ Jantje Baeyens 3.0.0
    Hardware:         Arduino UNO
-   Escrito por:      Celso Eiju Ito - eijuito@gmail.com
    Colaboradores:    Rui Viana - ruianaiv@gmail.com
-   Data:             2016-06-02
-   Uso:              IToPeggou
-   Diagrams:         N/A
+                     Natalia Ayako Takano - natalia.takano@gmail.com
+   Uso:              Generico
+   Diagrams:         http://github.com/eijuito/IToOutputModule595
+                     http://www.labirito.com/projetos/itooutputmodule74595
    Copyright ®       2016 Celso Eiju Ito eijuito@gmail.com (www.itosa.com.br)
                      Este programa e de propriedade do Celso Eiju Ito eijuito@gmail.com
                      E vedada a copia total ou parcial por pessoas nao autorizadas
                      Nao e permitida a comercializacao ou locacao
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    REVISIONS: (latest entry first)
+   2016-07-23 Implemented 3 ports mode
+   2016-07-13 Implemented 1 port mode but not working correct
    2016-06-23 Optimized to save memory
    2016-06-18 Second version eliminating Robocore dependency
    2016-06-02 Primeira versao
@@ -32,26 +37,46 @@
 
 #include "Arduino.h"
 
-#define ITOOUTPUTMODULE595_MAX_MODULES 10
-#define ITOOUTPUTMODULE595_DELAY_DATA           5 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_CLOCK_HIGH     5 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_CLOCK_LOW     20 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_LATCH       1100 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_1F_BITON      25 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_1F_BITOFF    120 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_1F_SHIFT      50 // [µs]
-#define ITOOUTPUTMODULE595_DELAY_1F_LATCH   60000 // [µs]
-#define UNDEF  0x2
-
 #define ITOOUTPUTMODULE595_VERSION "IToOutputModule595 v0.2.0"
+
+// =============================================================================
+// Options to be included into sketch to selectoperation mode, debug or reduced code
+// -----------------------------------------------------------------------------
+#define ITOOUTPUTMODULE595_MODE_1PORT
+// #define ITOOUTPUTMODULE595_MODE_2PORTS
+// #define ITOOUTPUTMODULE595_MODE_3PORTS
 #define ITOOUTPUTMODULE595_DEBUG
 #define ITOOUTPUTMODULE595_REDUCEDFUNCS
+
+#define ITOOUTPUTMODULE595_MAX_MODULES 10
+
+#define ITOOUTPUTMODULE595_DELAY_2F_DATA           5 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_2F_CLOCK_HIGH     5 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_2F_CLOCK_LOW     20 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_2F_LATCH       1100 // [µs]
+
+#define ITOOUTPUTMODULE595_DELAY_1F_BITON          1 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_BITOFF        15 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_SHIFT         10 // [µs]
+#define ITOOUTPUTMODULE595_DELAY_1F_LATCH         50 // [µs]
+#define UNDEF  0x2
+
+#ifndef ITOOUTPUTMODULE595_REDUCEDFUNCS
 static const char _hexachars[] = "0123456789ABCDEFabcdef";
+#endif // ITOOUTPUTMODULE595_REDUCEDFUNCS
 
 class IToOutputModule595 {
 	public:
 	// Construtor
-	IToOutputModule595(uint8_t moduleQty, uint8_t pinData, uint8_t pinClock = 255);
+#ifdef ITOOUTPUTMODULE595_MODE_1PORT
+	IToOutputModule595(uint8_t pinData, uint8_t moduleQty = 1);
+#endif // ITOOUTPUTMODULE595_MODE_1PORT
+#ifdef ITOOUTPUTMODULE595_MODE_2PORTS
+	IToOutputModule595(uint8_t pinData, uint8_t pinClock, uint8_t moduleQty = 1);
+#endif // ITOOUTPUTMODULE595_MODE_2PORTS
+#ifdef ITOOUTPUTMODULE595_MODE_3PORTS
+	IToOutputModule595(uint8_t pinData, uint8_t pinClock, uint8_t pinLatch, uint8_t moduleQty = 1);
+#endif // ITOOUTPUTMODULE595_MODE_3PORTS
 
 	// Clean all pins of all modules
 	virtual uint8_t ResetAll(void);
@@ -62,7 +87,7 @@ class IToOutputModule595 {
 
 	// Set all ports of the mudules according hexaValues provided
 	virtual uint8_t SetModules(char* hexaValues);
-#endif
+#endif // ITOOUTPUTMODULE595_REDUCEDFUNCS
 
 	// Returns the number of modules
 	virtual uint8_t NumModules();
@@ -82,13 +107,25 @@ class IToOutputModule595 {
 	// virtual Info(HardwareSerial *stream, byte format = HEX);
 	virtual const char* Version();
 
+	// Display information of config
+	void Info(void);
 
 private:
-	uint8_t _pinClock;
+#ifdef ITOOUTPUTMODULE595_MODE_1PORT
     uint8_t _pinData;
+#endif // ITOOUTPUTMODULE595_MODE_1PORT
+#ifdef ITOOUTPUTMODULE595_MODE_2PORTS
+    uint8_t _pinData;
+	uint8_t _pinClock;
+#endif // ITOOUTPUTMODULE595_MODE_2PORTS
+#ifdef ITOOUTPUTMODULE595_MODE_3PORTS
+    uint8_t _pinData;
+	uint8_t _pinClock;
+    uint8_t _pinLatch;
+#endif // ITOOUTPUTMODULE595_MODE_3PORTS
 	uint8_t _moduleQty;
 	uint8_t _data[ITOOUTPUTMODULE595_MAX_MODULES];
-	void PrivateSend(void);
+	void Send(void);
 };
 
 #endif /* ITOOUTPUTMODULE595_H_ */
