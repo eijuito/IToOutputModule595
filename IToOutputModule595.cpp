@@ -121,6 +121,7 @@ void IToOutputModule595::Info(void) {
 // Send the data
 void IToOutputModule595::Send(void){
 	byte mask;
+	cli();
 #ifdef ITOOUTPUTMODULE595_MODE_1PORT
 	for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
 		mask = 0x80; // set first bit 1000 0000
@@ -136,11 +137,10 @@ void IToOutputModule595::Send(void){
 			mask >>= 1; // update mask for next bit
 		} // end for each bit of the module
 	}  // end for each module
-	delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITOFF * 2); // make sure that last shift is done
 	digitalWrite(_pinData, LOW);
-	delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to allow latch
+	delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH * 3); // delay big to allow latch
 	digitalWrite(_pinData, HIGH);
-	delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH * 2); // delay big to asure capacitor discharge
+	delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_LATCH); // delay big to asure capacitor discharge
 
 #endif // ITOOUTPUTMODULE595_MODE_1PORT
 #ifdef ITOOUTPUTMODULE595_MODE_2PORTS
@@ -177,4 +177,5 @@ void IToOutputModule595::Send(void){
 	digitalWrite(_pinLatch, HIGH); // make latch to HIGH to latch registers to output
 	digitalWrite(_pinLatch, LOW); // latch = LOW
 #endif // ITOOUTPUTMODULE595_MODE_3PORTS
+	sei();
 }
