@@ -3,7 +3,7 @@
 #include "IToOutputModule595.h"
 
 const uint8_t qt_modules = 4; // 4 modules
-IToOutputModule595 outs(qt_modules, 2, 3); // (quantidade de módulos, pino de data, pino de clock)
+IToOutputModule595 outs(2, 3, qt_modules); // (pino de data, pino de clock, quantidade de módulos)
 
 int totalSaidas = 32; //Até 32 saídas com 4 registradores.
 int totalSequencias = 10;

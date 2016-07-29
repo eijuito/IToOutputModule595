@@ -2,7 +2,7 @@
 #include "IToOutputModule595.h"
 
 const uint8_t output_modules_max = 2; // 2 bytes = 4 digitos hexa no outputs
-IToOutputModule595 outs(output_modules_max, 2, 3); // (quantidade de módulos, pino de data, pino de clock)
+IToOutputModule595 outs(2, 3, output_modules_max); // (pino de data, pino de clock, quantidade de módulos)
 
 void setup() {
   Serial.begin(9600);

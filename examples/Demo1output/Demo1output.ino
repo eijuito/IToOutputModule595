@@ -10,7 +10,7 @@
 
 */
 const uint8_t qtd_modules = 2; // 2 modules or 2 74HC595
-IToOutputModule595 outs(qtd_modules, 2); // (quantidade de módulos, pino de data)
+IToOutputModule595 outs(2, qtd_modules); // (pino de data, quantidade de módulos)
 
 void setup() {
   Serial.begin(9600);
