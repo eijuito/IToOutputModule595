@@ -1,9 +1,11 @@
 # ITo Output Module 74HC595
 
-This library allows Arduino work with modules based on 74HC595 to extend outputs.
+Esta biblioteca permite ao Arduino trabalhar com módulos baseados no 74HC595 para extender o número de portas de saída digitais.
 
-For more information about this library please visit us at
+Para mais informações, exemplos e circuitos desta biblioteca, por favor, nos visite no
 [Project ITo Output Module 74HC595 @ labirito.com](http://www.labirito.com/projetos/itooutputmodule74595 "Labirito projects")
+
+Muito obrigado ao Rui Viana que desenvolveu, testou e refinou esta biblioteca.
 
 ## How use this library?
 
@@ -38,8 +40,14 @@ loop() {
 
 ## Circuit
 
-The circuit below implements the 2 ports output expansion.
-[![2 ports 74HC595 circuit](http://i.imgur.com/yh5pAQ0.png)](http://www.labirito.com/projetos/itooutputmodule74595)
+O circuito abaixo, implementa o modo de expansão com 1 porta do Arduino
+[![Circuito de expansão com 74HC595 que usa 1 porta do arduino](http://i.imgur.com/xDvFeTp.png)](http://www.labirito.com/projetos/itooutputmodule74595)
+
+O circuito abaixo, implementa o modo de expansão com 2 portas do Arduino
+[![Circuito de expansão com 74HC595 que usa 2 portas do arduino](http://i.imgur.com/yh5pAQ0.png)](http://www.labirito.com/projetos/itooutputmodule74595)
+
+O circuito abaixo, implementa o modo de expansão com 3 portas do Arduino
+<< brevevente será postado o esquema de 3 portas aqui >>
 
 ## License
 

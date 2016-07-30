@@ -126,13 +126,15 @@ void IToOutputModule595::Send(void){
 	for (uint8_t module = 0; module < _moduleQty; ++module) { // for each module
 		mask = 0x80; // set first bit 1000 0000
 		for (int bit = 0; bit < 8; ++bit) { // for each bit of the module
-			digitalWrite(_pinData, LOW);
 			if(_data[_moduleQty - module - 1] & mask) { // time in LOW is not enough to discharge capacitor
-				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITON);
-			} else { // time in LOW is long to discharge the capacitor
+				digitalWrite(_pinData, LOW);
 				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITOFF);
+				digitalWrite(_pinData, HIGH); // read the data according level of the capacitor
+			} else { // time in LOW is long to discharge the capacitor
+				digitalWrite(_pinData, LOW);
+				delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_BITON);
+				digitalWrite(_pinData, HIGH); // read the data according level of the capacitor
 			}
-			digitalWrite(_pinData, HIGH); // read the data according level of the capacitor
 			delayMicroseconds(ITOOUTPUTMODULE595_DELAY_1F_SHIFT);
 			mask >>= 1; // update mask for next bit
 		} // end for each bit of the module
