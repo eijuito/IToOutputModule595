@@ -38,7 +38,7 @@ loop() {
 }
 ```
 
-## Circuit
+## Esquemas elétricos
 
 O circuito abaixo, implementa o modo de expansão com 1 porta do Arduino
 [![Circuito de expansão com 74HC595 que usa 1 porta do arduino](http://i.imgur.com/xDvFeTp.png)](http://www.labirito.com/projetos/itooutputmodule74595)
